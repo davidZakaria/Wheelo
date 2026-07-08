@@ -155,17 +155,18 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
     text-align: center;
   }}
   .avatar {{
-    width: 34px;
-    height: 34px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid rgba(255,255,255,0.85);
     box-shadow: 0 4px 10px rgba(0,0,0,0.35);
     background: #234434;
+    image-rendering: auto;
   }}
   .avatar-fallback {{
-    width: 34px;
-    height: 34px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: grid;
     place-items: center;
@@ -272,13 +273,14 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
     text-transform: uppercase;
   }}
   .winner-avatar {{
-    width: 110px;
-    height: 110px;
+    width: 128px;
+    height: 128px;
     border-radius: 50%;
     object-fit: cover;
     margin: 18px auto 12px;
     border: 4px solid #d4af37;
     box-shadow: 0 0 30px rgba(212,175,55,0.45);
+    image-rendering: auto;
   }}
   .winner-name {{
     font-family: 'Cinzel', serif;

@@ -90,6 +90,7 @@ st.markdown(
         object-fit: cover;
         border: 2px solid rgba(212,175,55,0.55);
         margin-bottom: 8px;
+        image-rendering: auto;
     }
     .finalist-card .name {
         font-size: 0.78rem;

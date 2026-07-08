@@ -1,5 +1,7 @@
 """Load contestants from winners.csv and attach profile avatars from raw scrape data."""
 
+import ast
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -8,6 +10,25 @@ WINNERS_PATH = Path(__file__).parent / "winners.csv"
 FB_RAW_PATH = Path(__file__).parent / "facebook_raw.csv"
 IG_RAW_PATH = Path(__file__).parent / "instagram_raw.csv"
 EXCLUDED_USERNAMES = {"adamelhelou", "سمير الليثى"}
+AVATAR_SIZE = 320
+
+
+def enhance_avatar_url(url: str, size: int = AVATAR_SIZE) -> str:
+    """Request a larger CDN variant instead of the default 32px scrape thumbnail."""
+    if not isinstance(url, str) or not url.strip():
+        return ""
+
+    enhanced = url.strip()
+    size_tag = f"s{size}x{size}"
+
+    enhanced = re.sub(r"ctp=[sp]\d+x\d+", f"ctp={size_tag}", enhanced, flags=re.IGNORECASE)
+    enhanced = re.sub(
+        r"stp=dst-jpg_s\d+x\d+",
+        f"stp=dst-jpg_{size_tag}",
+        enhanced,
+        flags=re.IGNORECASE,
+    )
+    return enhanced
 
 
 def _pick_row(rows: pd.DataFrame, comment: str) -> pd.Series:
@@ -28,14 +49,42 @@ def _lookup_avatar(username: str, source: str, fb: pd.DataFrame, ig: pd.DataFram
         if not rows.empty:
             pic = rows.iloc[0].get("ownerProfilePicUrl")
             if isinstance(pic, str) and pic.strip():
-                return pic.strip()
+                return enhance_avatar_url(pic.strip())
         return ""
 
     rows = fb[fb["profileName"] == username]
     if not rows.empty:
-        pic = rows.iloc[0].get("profilePicture")
+        row = rows.iloc[0]
+        author_pic = _avatar_from_author(row.get("author"))
+        if author_pic:
+            return enhance_avatar_url(author_pic)
+        pic = row.get("profilePicture")
         if isinstance(pic, str) and pic.strip():
-            return pic.strip()
+            return enhance_avatar_url(pic.strip())
+    return ""
+
+
+def _avatar_from_author(author) -> str:
+    if not isinstance(author, str) or not author.strip():
+        return ""
+    match = re.search(
+        r"profile_picture_depth_0_increased['\"]:\s*\{[^}]*'uri':\s*'([^']+)'",
+        author,
+    )
+    if match:
+        return match.group(1)
+    try:
+        author_data = ast.literal_eval(author)
+        increased = author_data.get("profile_picture_depth_0_increased", {})
+        uri = increased.get("uri")
+        if isinstance(uri, str) and uri.strip():
+            return uri.strip()
+        standard = author_data.get("profile_picture_depth_0", {})
+        uri = standard.get("uri")
+        if isinstance(uri, str) and uri.strip():
+            return uri.strip()
+    except (SyntaxError, ValueError):
+        pass
     return ""
 
 
@@ -79,6 +128,8 @@ def load_contestants() -> list[dict]:
         avatar = row.get("avatar_url", "")
         if not isinstance(avatar, str) or not avatar.strip():
             avatar = _lookup_avatar(username, source, fb, ig)
+        else:
+            avatar = enhance_avatar_url(avatar)
 
         comment_url = row.get("comment_url", "")
         if not isinstance(comment_url, str) or not comment_url.strip():
