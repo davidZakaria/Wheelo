@@ -25,18 +25,19 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
     font-family: 'Outfit', sans-serif;
     background: radial-gradient(ellipse at center, #0f2b1d 0%, #040a07 70%);
     color: #f8f4e8;
-    overflow: hidden;
-    min-height: 760px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 100vh;
   }}
   .stage {{
     position: relative;
     width: 100%;
-    min-height: 760px;
+    min-height: clamp(720px, 88vh, 1180px);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 12px 8px 28px;
+    padding: clamp(12px, 2vw, 32px) clamp(8px, 2vw, 40px) clamp(28px, 3vw, 48px);
   }}
   .ambient {{
     position: absolute;
@@ -48,7 +49,7 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
   }}
   .title {{
     font-family: 'Cinzel', serif;
-    font-size: clamp(1.3rem, 2.5vw, 2rem);
+    font-size: clamp(1.4rem, 2.2vw, 3rem);
     letter-spacing: 0.28em;
     text-transform: uppercase;
     color: #d4af37;
@@ -57,15 +58,15 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
     z-index: 2;
   }}
   .subtitle {{
-    font-size: 0.95rem;
+    font-size: clamp(0.9rem, 1.2vw, 1.35rem);
     opacity: 0.75;
-    margin-bottom: 18px;
+    margin-bottom: clamp(14px, 2vw, 28px);
     z-index: 2;
   }}
   .wheel-wrap {{
     position: relative;
-    width: min(92vw, 520px);
-    height: min(92vw, 520px);
+    width: clamp(300px, 52vmin, 820px);
+    height: clamp(300px, 52vmin, 820px);
     z-index: 2;
   }}
   .outer-ring {{
@@ -97,19 +98,19 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
     transform: translateX(-50%);
     width: 0;
     height: 0;
-    border-left: 18px solid transparent;
-    border-right: 18px solid transparent;
-    border-top: 34px solid #d4af37;
+    border-left: clamp(14px, 1.6vw, 24px) solid transparent;
+    border-right: clamp(14px, 1.6vw, 24px) solid transparent;
+    border-top: clamp(26px, 3vw, 44px) solid #d4af37;
     filter: drop-shadow(0 6px 10px rgba(0,0,0,0.55));
     z-index: 20;
   }}
   .pointer-cap {{
     position: absolute;
-    top: 24px;
+    top: clamp(18px, 2.2vw, 30px);
     left: 50%;
     transform: translateX(-50%);
-    width: 22px;
-    height: 22px;
+    width: clamp(18px, 2vw, 30px);
+    height: clamp(18px, 2vw, 30px);
     border-radius: 50%;
     background: linear-gradient(145deg, #f7e6a7, #b8891d);
     border: 2px solid #fff2c7;
@@ -151,12 +152,12 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    width: 72px;
+    width: clamp(56px, 8vmin, 110px);
     text-align: center;
   }}
   .avatar {{
-    width: 40px;
-    height: 40px;
+    width: clamp(34px, 5vmin, 72px);
+    height: clamp(34px, 5vmin, 72px);
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid rgba(255,255,255,0.85);
@@ -165,24 +166,24 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
     image-rendering: auto;
   }}
   .avatar-fallback {{
-    width: 40px;
-    height: 40px;
+    width: clamp(34px, 5vmin, 72px);
+    height: clamp(34px, 5vmin, 72px);
     border-radius: 50%;
     display: grid;
     place-items: center;
-    font-size: 0.8rem;
+    font-size: clamp(0.75rem, 1.4vmin, 1.2rem);
     font-weight: 700;
     color: #fff;
     background: linear-gradient(145deg, #2f6a4d, #17402d);
     border: 2px solid rgba(255,255,255,0.85);
   }}
   .name {{
-    font-size: 0.58rem;
+    font-size: clamp(0.5rem, 1.1vmin, 0.82rem);
     line-height: 1.1;
     font-weight: 600;
     color: #fff;
     text-shadow: 0 1px 3px rgba(0,0,0,0.65);
-    max-width: 72px;
+    max-width: clamp(56px, 8vmin, 110px);
     word-break: break-word;
   }}
   .hub {{
@@ -196,29 +197,29 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
     place-items: center;
     z-index: 10;
     text-align: center;
-    padding: 8px;
+    padding: clamp(6px, 1vmin, 12px);
   }}
   .hub-title {{
     font-family: 'Cinzel', serif;
-    font-size: 0.72rem;
+    font-size: clamp(0.62rem, 1.2vmin, 1rem);
     font-weight: 900;
     color: #2d1f05;
     letter-spacing: 0.08em;
     line-height: 1.2;
   }}
   .hub-sub {{
-    font-size: 0.55rem;
+    font-size: clamp(0.45rem, 0.9vmin, 0.7rem);
     color: #4a3508;
     margin-top: 2px;
   }}
   .spin-btn {{
-    margin-top: 22px;
+    margin-top: clamp(18px, 2.5vw, 32px);
     z-index: 5;
     border: none;
-    padding: 14px 42px;
+    padding: clamp(12px, 1.4vw, 18px) clamp(28px, 4vw, 56px);
     border-radius: 999px;
     font-family: 'Cinzel', serif;
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 1.4vw, 1.35rem);
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: #1d1404;
@@ -238,7 +239,7 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
   .status {{
     margin-top: 14px;
     min-height: 24px;
-    font-size: 0.95rem;
+    font-size: clamp(0.9rem, 1.2vw, 1.2rem);
     letter-spacing: 0.06em;
     z-index: 5;
     color: #d8c89a;
@@ -255,9 +256,9 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
     animation: fadeIn 0.8s ease forwards;
   }}
   .winner-card {{
-    width: min(92vw, 420px);
+    width: min(92vw, 520px);
     border-radius: 24px;
-    padding: 28px 24px 24px;
+    padding: clamp(24px, 3vw, 40px) clamp(20px, 2.5vw, 32px) clamp(20px, 2.5vw, 28px);
     background: linear-gradient(160deg, rgba(24,58,40,0.95), rgba(8,20,14,0.98));
     border: 1px solid rgba(212,175,55,0.45);
     box-shadow: 0 30px 80px rgba(0,0,0,0.55);
@@ -273,8 +274,8 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
     text-transform: uppercase;
   }}
   .winner-avatar {{
-    width: 128px;
-    height: 128px;
+    width: clamp(110px, 14vmin, 180px);
+    height: clamp(110px, 14vmin, 180px);
     border-radius: 50%;
     object-fit: cover;
     margin: 18px auto 12px;
@@ -284,7 +285,7 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
   }}
   .winner-name {{
     font-family: 'Cinzel', serif;
-    font-size: 1.55rem;
+    font-size: clamp(1.4rem, 2.4vw, 2.2rem);
     margin-bottom: 8px;
     color: #fff8e7;
   }}
@@ -705,13 +706,20 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
       return name.trim().charAt(0).toUpperCase() || "?";
     }}
 
+    function bulbRadius() {{
+      const wrap = document.querySelector(".wheel-wrap");
+      return Math.max((wrap ? wrap.offsetWidth : 520) / 2 - 12, 120);
+    }}
+
     function buildBulbs() {{
       const total = 24;
+      const radius = bulbRadius();
+      outerRing.querySelectorAll(".bulb").forEach((node) => node.remove());
       for (let i = 0; i < total; i++) {{
         const bulb = document.createElement("div");
         bulb.className = "bulb";
         const angle = (360 / total) * i;
-        bulb.style.transform = `rotate(${{angle}}deg) translate(248px, -5px)`;
+        bulb.style.transform = `rotate(${{angle}}deg) translate(${{radius}}px, -5px)`;
         bulb.style.animationDelay = `${{(i % 5) * 0.15}}s`;
         outerRing.appendChild(bulb);
       }}
@@ -862,6 +870,9 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
     buildBulbs();
     buildWheel();
     spinBtn.addEventListener("click", spinWheel);
+    window.addEventListener("resize", () => {{
+      window.requestAnimationFrame(buildBulbs);
+    }});
 
     setTimeout(() => {{
       setStatus("Ready. Tap SPIN THE WHEEL");
@@ -871,4 +882,4 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
 </body>
 </html>
 """
-    components.html(html, height=820, scrolling=False)
+    components.html(html, height=1100, scrolling=False)

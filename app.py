@@ -32,11 +32,14 @@ st.markdown(
         color: #f5f0e1;
         font-family: 'Outfit', sans-serif;
     }
-    .block-container { padding-top: 1.2rem; max-width: 1200px; }
-    h1, h2, h3 {
-        font-family: 'Cinzel', serif !important;
-        color: #d4af37 !important;
-        letter-spacing: 0.08em;
+    .block-container {
+        padding-top: 1.2rem;
+        max-width: min(96vw, 1200px);
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .hero h1 {
+        font-size: clamp(1.8rem, 2.8vw, 2.6rem) !important;
     }
     .hero {
         text-align: center;
@@ -44,26 +47,40 @@ st.markdown(
     }
     .hero p {
         color: #c8be9d;
-        font-size: 1.05rem;
+        font-size: clamp(1rem, 1.4vw, 1.35rem);
         margin-top: -0.4rem;
+    }
+    .metrics-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 0.5rem;
+    }
+    .metric-card h2 {
+        margin: 0;
+        font-size: clamp(1.8rem, 3vw, 3.2rem) !important;
+    }
+    .metric-card span {
+        color: #b7aa84;
+        font-size: clamp(0.78rem, 1vw, 1rem);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
     }
     .metric-card {
         background: linear-gradient(145deg, rgba(18,42,30,0.9), rgba(8,18,13,0.95));
         border: 1px solid rgba(212,175,55,0.25);
         border-radius: 18px;
-        padding: 16px 18px;
+        padding: clamp(14px, 1.6vw, 24px) clamp(16px, 2vw, 28px);
         text-align: center;
         box-shadow: 0 12px 30px rgba(0,0,0,0.25);
     }
-    .metric-card h2 {
-        margin: 0;
-        font-size: 2rem !important;
+    h1, h2, h3 {
+        font-family: 'Cinzel', serif !important;
+        color: #d4af37 !important;
+        letter-spacing: 0.08em;
     }
-    .metric-card span {
-        color: #b7aa84;
-        font-size: 0.85rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
+    h2 {
+        font-size: clamp(1.2rem, 1.8vw, 1.8rem) !important;
     }
     .finalist-grid {
         display: grid;
@@ -71,21 +88,9 @@ st.markdown(
         gap: 12px;
         margin-top: 10px;
     }
-    .finalist-card {
-        background: rgba(10,24,17,0.85);
-        border: 1px solid rgba(212,175,55,0.18);
-        border-radius: 16px;
-        padding: 10px 8px 12px;
-        text-align: center;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .finalist-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 24px rgba(212,175,55,0.12);
-    }
     .finalist-card img {
-        width: 58px;
-        height: 58px;
+        width: clamp(52px, 5vw, 84px);
+        height: clamp(52px, 5vw, 84px);
         border-radius: 50%;
         object-fit: cover;
         border: 2px solid rgba(212,175,55,0.55);
@@ -93,13 +98,25 @@ st.markdown(
         image-rendering: auto;
     }
     .finalist-card .name {
-        font-size: 0.78rem;
+        font-size: clamp(0.72rem, 1vw, 0.95rem);
         line-height: 1.2;
         color: #f4eedc;
         font-weight: 600;
     }
+    .finalist-card {
+        background: rgba(10,24,17,0.85);
+        border: 1px solid rgba(212,175,55,0.18);
+        border-radius: 16px;
+        padding: clamp(8px, 1vw, 14px) clamp(6px, 0.8vw, 12px) clamp(10px, 1.2vw, 16px);
+        text-align: center;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .finalist-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 24px rgba(212,175,55,0.12);
+    }
     .finalist-card .source {
-        font-size: 0.65rem;
+        font-size: clamp(0.6rem, 0.8vw, 0.78rem);
         color: #8fd6ad;
         margin-top: 4px;
         letter-spacing: 0.08em;
@@ -163,6 +180,52 @@ st.markdown(
     }
     .comment-panel .meta a:hover {
         text-decoration: underline;
+    }
+    .roulette-shell iframe {
+        width: 100% !important;
+        min-height: clamp(760px, 82vh, 1180px) !important;
+        border: none;
+    }
+    .action-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 14px;
+        align-items: center;
+    }
+    @media (min-width: 1400px) {
+        .block-container { max-width: 1560px; padding-top: 1.8rem; }
+        .finalist-grid {
+            grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+            gap: 16px;
+        }
+    }
+    @media (min-width: 1920px) {
+        .block-container { max-width: 1840px; padding-top: 2rem; }
+        .hero h1 { font-size: 3.4rem !important; }
+        .finalist-grid {
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 20px;
+        }
+        .stButton > button {
+            padding: 1rem 2.6rem !important;
+            font-size: 1.05rem !important;
+        }
+    }
+    @media (min-width: 2560px) {
+        .block-container { max-width: 2280px; }
+        .hero h1 { font-size: 4rem !important; }
+        .finalist-grid {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 24px;
+        }
+    }
+    @media (max-width: 768px) {
+        .metrics-row { grid-template-columns: 1fr; }
+        .action-row { grid-template-columns: 1fr; }
+        .finalist-grid {
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
     }
     </style>
     """,
@@ -341,11 +404,13 @@ else:
 
     if "winner_index" in st.session_state:
         st.markdown("### The Arena")
+        st.markdown('<div class="roulette-shell">', unsafe_allow_html=True)
         render_roulette(
             contestants,
             st.session_state["winner_index"],
             st.session_state["spin_id"],
         )
+        st.markdown("</div>", unsafe_allow_html=True)
 
 with st.expander("Admin · Scrape & Filter Comments"):
     egypt_score = st.text_input("Egypt Score", value="2")
