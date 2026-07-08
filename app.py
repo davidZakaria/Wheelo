@@ -1,3 +1,4 @@
+import html
 import random
 
 import pandas as pd
@@ -124,6 +125,44 @@ st.markdown(
         border: 1px solid rgba(212,175,55,0.15);
         border-radius: 16px;
     }
+    .comment-panel {
+        background: linear-gradient(145deg, rgba(18,42,30,0.92), rgba(8,18,13,0.96));
+        border: 1px solid rgba(212,175,55,0.28);
+        border-radius: 18px;
+        padding: 18px 20px;
+        margin-top: 8px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.22);
+    }
+    .comment-panel .label {
+        color: #b7aa84;
+        font-size: 0.78rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+    .comment-panel .quote {
+        color: #f8f4e8;
+        font-size: 1.15rem;
+        line-height: 1.6;
+        font-weight: 500;
+        padding: 12px 14px;
+        border-left: 3px solid #d4af37;
+        background: rgba(0,0,0,0.18);
+        border-radius: 0 12px 12px 0;
+        margin-bottom: 12px;
+    }
+    .comment-panel .meta {
+        color: #8fd6ad;
+        font-size: 0.85rem;
+    }
+    .comment-panel .meta a {
+        color: #8fd6ad;
+        text-decoration: none;
+        font-weight: 600;
+    }
+    .comment-panel .meta a:hover {
+        text-decoration: underline;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -135,6 +174,9 @@ if "contestants" not in st.session_state:
 
 if "spin_id" not in st.session_state:
     st.session_state["spin_id"] = 0
+
+if "comment_index" not in st.session_state:
+    st.session_state["comment_index"] = 0
 
 contestants = st.session_state["contestants"]
 
@@ -189,6 +231,84 @@ for person in contestants:
     )
 cards_html.append("</div>")
 st.markdown("".join(cards_html), unsafe_allow_html=True)
+
+comment_col1, comment_col2 = st.columns([1, 2])
+with comment_col1:
+    show_comments = st.button("View Finalist Comments", use_container_width=True)
+with comment_col2:
+    st.caption("See each finalist's original Facebook or Instagram prediction.")
+
+if show_comments:
+    st.session_state["show_comments"] = True
+
+if st.session_state.get("show_comments") and contestants:
+    st.markdown("#### Finalist Comments")
+
+    name_options = list(range(len(contestants)))
+    selected_index = st.selectbox(
+        "Select finalist",
+        options=name_options,
+        index=min(st.session_state["comment_index"], len(contestants) - 1),
+        format_func=lambda i: f'{contestants[i]["username"]} ({contestants[i].get("source", "")})',
+        label_visibility="collapsed",
+    )
+    st.session_state["comment_index"] = selected_index
+
+    quick_cols = st.columns(6)
+    for i, person in enumerate(contestants):
+        with quick_cols[i % 6]:
+            if st.button(
+                person["username"][:14] + ("…" if len(person["username"]) > 14 else ""),
+                key=f"comment_pick_{i}",
+                use_container_width=True,
+            ):
+                st.session_state["comment_index"] = i
+                st.rerun()
+
+    person = contestants[st.session_state["comment_index"]]
+    comment_text = html.escape(person.get("comment", "").strip() or "No comment saved.")
+    profile_url = html.escape(person.get("profile_url", "").strip())
+    source = html.escape(person.get("source", ""))
+    username = html.escape(person["username"])
+    avatar = html.escape(person.get("avatar_url", ""))
+
+    avatar_html = (
+        f'<img src="{avatar}" alt="{username}" '
+        f'style="width:54px;height:54px;border-radius:50%;object-fit:cover;'
+        f'border:2px solid rgba(212,175,55,0.55);margin-right:12px;" '
+        f'onerror="this.style.display=\'none\'" />'
+        if avatar
+        else (
+            f'<div style="width:54px;height:54px;border-radius:50%;display:grid;place-items:center;'
+            f'margin-right:12px;background:#2f6a4d;border:2px solid rgba(212,175,55,0.55);'
+            f'font-weight:700;">{username[:1].upper()}</div>'
+        )
+    )
+    profile_link = (
+        f'<a href="{profile_url}" target="_blank" rel="noopener">View {source} profile</a>'
+        if profile_url
+        else "No profile link"
+    )
+
+    st.markdown(
+        f"""
+        <div class="comment-panel">
+            <div style="display:flex;align-items:center;margin-bottom:14px;">
+                {avatar_html}
+                <div>
+                    <div class="label">Finalist</div>
+                    <div style="font-family:'Cinzel',serif;font-size:1.2rem;color:#d4af37;">
+                        {username}
+                    </div>
+                </div>
+            </div>
+            <div class="label">Prediction comment</div>
+            <div class="quote">"{comment_text}"</div>
+            <div class="meta">{source} · {profile_link}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 st.markdown("---")
 
