@@ -181,10 +181,10 @@ if "comment_index" not in st.session_state:
 contestants = st.session_state["contestants"]
 
 st.markdown(
-    """
+    f"""
     <div class="hero">
         <h1>Green Avenue Live Roulette</h1>
-        <p>Twenty-three finalists. One property. One spin decides it all.</p>
+        <p>{len(contestants)} finalists. One property. One spin decides it all.</p>
     </div>
     """,
     unsafe_allow_html=True,

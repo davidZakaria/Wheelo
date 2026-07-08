@@ -7,7 +7,7 @@ import pandas as pd
 WINNERS_PATH = Path(__file__).parent / "winners.csv"
 FB_RAW_PATH = Path(__file__).parent / "facebook_raw.csv"
 IG_RAW_PATH = Path(__file__).parent / "instagram_raw.csv"
-EXCLUDED_USERNAMES = {"adamelhelou"}
+EXCLUDED_USERNAMES = {"adamelhelou", "سمير الليثى"}
 
 
 def _lookup_avatar(username: str, source: str, fb: pd.DataFrame, ig: pd.DataFrame) -> str:
