@@ -6,6 +6,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from social_links import prepare_social_url
+
 WINNERS_PATH = Path(__file__).parent / "winners.csv"
 FB_RAW_PATH = Path(__file__).parent / "facebook_raw.csv"
 IG_RAW_PATH = Path(__file__).parent / "instagram_raw.csv"
@@ -160,8 +162,10 @@ def load_contestants() -> list[dict]:
             {
                 "username": username,
                 "comment": comment,
-                "profile_url": profile_url,
-                "comment_url": comment_url if isinstance(comment_url, str) else "",
+                "profile_url": prepare_social_url(profile_url, source, username),
+                "comment_url": prepare_social_url(
+                    comment_url if isinstance(comment_url, str) else "", source, username
+                ),
                 "source": source,
                 "avatar_url": avatar if isinstance(avatar, str) else "",
             }

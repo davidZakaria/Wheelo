@@ -1,4 +1,5 @@
 import html
+import json
 import random
 
 import pandas as pd
@@ -13,6 +14,7 @@ from filtering import (
     normalize_uploaded_df,
 )
 from roulette import render_roulette
+from social_links import SOCIAL_OPEN_JS
 
 st.set_page_config(
     page_title="Green Avenue · Live Roulette",
@@ -228,6 +230,9 @@ st.markdown(
         }
     }
     </style>
+    <script>
+    {SOCIAL_OPEN_JS}
+    </script>
     """,
     unsafe_allow_html=True,
 )
@@ -354,12 +359,16 @@ if st.session_state.get("show_comments") and contestants:
         )
     )
     profile_link = (
-        f'<a href="{profile_url}" target="_blank" rel="noopener">View {source} profile</a>'
+        f'<a href="{profile_url}" class="wheelo-social-link" '
+        f'onclick="wheeloOpenSocialLink(event, {json.dumps(profile_url)}, {json.dumps(source)})" '
+        f'rel="noopener">View {source} profile</a>'
         if profile_url
         else "No profile link"
     )
     comment_link = (
-        f' · <a href="{comment_url}" target="_blank" rel="noopener">View comment on post</a>'
+        f' · <a href="{comment_url}" class="wheelo-social-link" '
+        f'onclick="wheeloOpenSocialLink(event, {json.dumps(comment_url)}, {json.dumps(source)})" '
+        f'rel="noopener">View comment on post</a>'
         if comment_url
         else ""
     )

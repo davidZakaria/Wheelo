@@ -2,6 +2,8 @@ import json
 
 import streamlit.components.v1 as components
 
+from social_links import SOCIAL_OPEN_JS
+
 
 def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) -> None:
     payload = json.dumps(
@@ -471,6 +473,8 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
   </div>
 
   <script>
+    {SOCIAL_OPEN_JS}
+
     const data = {payload};
     const contestants = data.contestants || [];
     const winnerIndex = data.winnerIndex;
@@ -785,6 +789,19 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
       }}
     }}
 
+    function bindSocialLinks(root) {{
+      root.querySelectorAll(".wheelo-social").forEach((link) => {{
+        link.addEventListener("click", (event) => {{
+          wheeloOpenSocialLink(event, link.getAttribute("data-url") || link.href, link.getAttribute("data-source") || "");
+        }});
+      }});
+    }}
+
+    function socialButton(label, url, source) {{
+      if (!url) return "";
+      return `<a class="winner-btn wheelo-social" href="${{escapeHtml(url)}}" data-url="${{escapeHtml(url)}}" data-source="${{escapeHtml(source)}}">${{escapeHtml(label)}}</a>`;
+    }}
+
     function showWinner() {{
       const winner = contestants[winnerIndex];
       const avatarHtml = winner.avatar_url
@@ -797,10 +814,12 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
         <div class="winner-name">${{escapeHtml(winner.username)}}</div>
         <div class="winner-comment">"${{escapeHtml(winner.comment)}}"</div>
         <div class="winner-actions">
-          ${{winner.profile_url ? `<a class="winner-btn profile-btn" href="${{escapeHtml(winner.profile_url)}}" target="_blank" rel="noopener">View ${{escapeHtml(winner.source)}} Profile</a>` : ""}}
-          ${{winner.comment_url ? `<a class="winner-btn comment-btn" href="${{escapeHtml(winner.comment_url)}}" target="_blank" rel="noopener">View Comment on Post</a>` : ""}}
+          ${{socialButton(`View ${{escapeHtml(winner.source)}} Profile`, winner.profile_url, winner.source)}}
+          ${{socialButton("View Comment on Post", winner.comment_url, winner.source)}}
         </div>
       `;
+
+      bindSocialLinks(winnerCard);
 
       overlay.style.display = "flex";
       launchConfetti();
