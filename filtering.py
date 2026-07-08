@@ -45,8 +45,15 @@ PROFILE_URL_ALIASES = ("profileUrl", "profile_url", "profileLink", "url")
 SOURCE_ALIASES = ("source", "platform")
 
 
+def _extract_facebook_comment_url(row: pd.Series) -> str:
+    comment_url = row.get("commentUrl")
+    if isinstance(comment_url, str) and comment_url.strip():
+        return comment_url.strip()
+    return ""
+
+
 def _extract_facebook_profile_url(row: pd.Series) -> str:
-    for key in ("profile_url", "profileUrl"):
+    for key in ("profileUrl", "profile_url"):
         profile_url = row.get(key)
         if isinstance(profile_url, str) and profile_url.strip():
             return profile_url.strip()
@@ -63,10 +70,6 @@ def _extract_facebook_profile_url(row: pd.Series) -> str:
                 return url.strip()
         except (SyntaxError, ValueError):
             pass
-
-    comment_url = row.get("commentUrl")
-    if isinstance(comment_url, str) and comment_url.strip():
-        return comment_url.strip()
 
     return ""
 
@@ -90,8 +93,9 @@ def normalize_facebook_df(df: pd.DataFrame) -> pd.DataFrame:
     work = _rename_column(work, USERNAME_ALIASES, "username")
     result = _require_columns(work, "Facebook")
     result["profile_url"] = df.apply(_extract_facebook_profile_url, axis=1)
+    result["comment_url"] = df.apply(_extract_facebook_comment_url, axis=1)
     result["source"] = "Facebook"
-    return result[["username", "comment", "profile_url", "source"]]
+    return result[["username", "comment", "profile_url", "comment_url", "source"]]
 
 
 def normalize_instagram_df(df: pd.DataFrame) -> pd.DataFrame:
@@ -103,8 +107,14 @@ def normalize_instagram_df(df: pd.DataFrame) -> pd.DataFrame:
         result["profile_url"] = df["profile_url"].fillna("").astype(str)
     else:
         result["profile_url"] = result["username"].apply(_instagram_profile_url)
+    if "commentUrl" in df.columns:
+        result["comment_url"] = df["commentUrl"].fillna("").astype(str)
+    elif "comment_url" in df.columns:
+        result["comment_url"] = df["comment_url"].fillna("").astype(str)
+    else:
+        result["comment_url"] = ""
     result["source"] = "Instagram"
-    return result[["username", "comment", "profile_url", "source"]]
+    return result[["username", "comment", "profile_url", "comment_url", "source"]]
 
 
 def normalize_uploaded_df(df: pd.DataFrame) -> pd.DataFrame:
@@ -121,7 +131,13 @@ def normalize_uploaded_df(df: pd.DataFrame) -> pd.DataFrame:
         result["source"] = "Upload"
     else:
         result["source"] = df["source"].fillna("Upload").astype(str)
-    return result[["username", "comment", "profile_url", "source"]]
+    if "comment_url" in df.columns:
+        result["comment_url"] = df["comment_url"].fillna("").astype(str)
+    elif "commentUrl" in df.columns:
+        result["comment_url"] = df["commentUrl"].fillna("").astype(str)
+    else:
+        result["comment_url"] = ""
+    return result[["username", "comment", "profile_url", "comment_url", "source"]]
 
 
 def _require_columns(df: pd.DataFrame, source: str) -> pd.DataFrame:
@@ -243,7 +259,7 @@ def build_contestants(
 ) -> tuple[pd.DataFrame, int]:
     if not dfs:
         return pd.DataFrame(
-            columns=["username", "comment", "profile_url", "source"]
+            columns=["username", "comment", "profile_url", "comment_url", "source"]
         ), 0
 
     combined = pd.concat(dfs, ignore_index=True)
@@ -252,7 +268,11 @@ def build_contestants(
     )
     winners = combined[combined["is_winner"]].copy()
     winners["profile_url"] = winners["profile_url"].fillna("")
+    if "comment_url" in winners.columns:
+        winners["comment_url"] = winners["comment_url"].fillna("").astype(str)
+    else:
+        winners["comment_url"] = ""
     winners = winners.sort_values(
         by=["username", "profile_url"], ascending=[True, False]
     ).drop_duplicates(subset=["username"], keep="first")
-    return winners[["username", "comment", "profile_url", "source"]], len(winners)
+    return winners[["username", "comment", "profile_url", "comment_url", "source"]], len(winners)

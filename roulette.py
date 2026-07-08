@@ -289,17 +289,13 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
   .winner-comment {{
     font-size: 0.92rem;
     line-height: 1.5;
-    opacity: 0.85;
-    margin: 12px 8px 0;
+    opacity: 0.9;
+    margin: 14px 8px 0;
     padding: 12px 14px;
     border-left: 3px solid #d4af37;
     background: rgba(0,0,0,0.22);
     border-radius: 0 12px 12px 0;
-    display: none;
-  }}
-  .winner-comment.visible {{
     display: block;
-    animation: fadeIn 0.35s ease forwards;
   }}
   .winner-actions {{
     display: flex;
@@ -789,22 +785,12 @@ def render_roulette(contestants: list[dict], winner_index: int, spin_id: int) ->
         <div class="winner-label">Grand Prize Winner</div>
         ${{avatarHtml}}
         <div class="winner-name">${{escapeHtml(winner.username)}}</div>
+        <div class="winner-comment">"${{escapeHtml(winner.comment)}}"</div>
         <div class="winner-actions">
           ${{winner.profile_url ? `<a class="winner-btn profile-btn" href="${{escapeHtml(winner.profile_url)}}" target="_blank" rel="noopener">View ${{escapeHtml(winner.source)}} Profile</a>` : ""}}
-          <button type="button" class="winner-btn comment-btn" id="viewWinnerCommentBtn">View Comment</button>
+          ${{winner.comment_url ? `<a class="winner-btn comment-btn" href="${{escapeHtml(winner.comment_url)}}" target="_blank" rel="noopener">View Comment on Post</a>` : ""}}
         </div>
-        <div class="winner-comment" id="winnerComment">"${{escapeHtml(winner.comment)}}"</div>
       `;
-
-      const commentBtn = document.getElementById("viewWinnerCommentBtn");
-      const commentEl = document.getElementById("winnerComment");
-      if (commentBtn && commentEl) {{
-        commentBtn.addEventListener("click", () => {{
-          const isVisible = commentEl.classList.toggle("visible");
-          commentBtn.classList.toggle("active", isVisible);
-          commentBtn.textContent = isVisible ? "Hide Comment" : "View Comment";
-        }});
-      }}
 
       overlay.style.display = "flex";
       launchConfetti();

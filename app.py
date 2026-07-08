@@ -268,6 +268,7 @@ if st.session_state.get("show_comments") and contestants:
     person = contestants[st.session_state["comment_index"]]
     comment_text = html.escape(person.get("comment", "").strip() or "No comment saved.")
     profile_url = html.escape(person.get("profile_url", "").strip())
+    comment_url = html.escape(person.get("comment_url", "").strip())
     source = html.escape(person.get("source", ""))
     username = html.escape(person["username"])
     avatar = html.escape(person.get("avatar_url", ""))
@@ -289,6 +290,11 @@ if st.session_state.get("show_comments") and contestants:
         if profile_url
         else "No profile link"
     )
+    comment_link = (
+        f' · <a href="{comment_url}" target="_blank" rel="noopener">View comment on post</a>'
+        if comment_url
+        else ""
+    )
 
     st.markdown(
         f"""
@@ -304,7 +310,7 @@ if st.session_state.get("show_comments") and contestants:
             </div>
             <div class="label">Prediction comment</div>
             <div class="quote">"{comment_text}"</div>
-            <div class="meta">{source} · {profile_link}</div>
+            <div class="meta">{source} · {profile_link}{comment_link}</div>
         </div>
         """,
         unsafe_allow_html=True,
