@@ -14,11 +14,23 @@ AVATAR_SIZE = 320
 
 
 def enhance_avatar_url(url: str, size: int = AVATAR_SIZE) -> str:
-    """Request a larger CDN variant instead of the default 32px scrape thumbnail."""
+    """Request a larger CDN variant for Facebook thumbnails.
+
+    Instagram CDN links only work at their original signed size (usually 150x150).
+    Upscaling them returns 403, so those URLs are left unchanged.
+    """
     if not isinstance(url, str) or not url.strip():
         return ""
 
     enhanced = url.strip()
+    if "cdninstagram.com" in enhanced.lower():
+        return re.sub(
+            r"stp=dst-jpg_s\d+x\d+",
+            "stp=dst-jpg_s150x150",
+            enhanced,
+            flags=re.IGNORECASE,
+        )
+
     size_tag = f"s{size}x{size}"
 
     enhanced = re.sub(r"ctp=[sp]\d+x\d+", f"ctp={size_tag}", enhanced, flags=re.IGNORECASE)

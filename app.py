@@ -218,7 +218,11 @@ for person in contestants:
     name = person["username"]
     source = person.get("source", "")
     if avatar:
-        img = f'<img src="{avatar}" alt="{name}" onerror="this.style.display=\'none\'" />'
+        initial = name.strip()[:1].upper() or "?"
+        img = (
+            f'<img src="{avatar}" alt="{name}" '
+            f'onerror="this.outerHTML=\'<div style=&quot;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;margin:0 auto 8px;background:#2f6a4d;border:2px solid rgba(212,175,55,0.55);font-weight:700;&quot;>{initial}</div>\'" />'
+        )
     else:
         initial = name.strip()[:1].upper() or "?"
         img = (
